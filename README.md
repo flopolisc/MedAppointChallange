@@ -60,7 +60,7 @@ e2e/
 
 Tests use page objects for locators. Since we can't add `data-testid` to the app, selectors rely on roles, labels, and the few existing test ids.
 
-Runs are serial (`workers: 1`) because all tests share the same patient account.
+Runs are serial (`workers: 1`) because all tests share the same patient account. The browser timezone is fixed to `America/Argentina/Buenos_Aires` so date-display bugs reproduce the same way locally and in CI.
 
 ## Environment
 

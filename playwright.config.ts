@@ -17,6 +17,8 @@ export default defineConfig({
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL,
+    // Match a UTC-3 timezone so the appointment date display bug reproduces in CI (not only locally).
+    timezoneId: 'America/Argentina/Buenos_Aires',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
