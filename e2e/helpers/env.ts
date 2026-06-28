@@ -13,7 +13,5 @@ export const env = {
   patientPassword: required('PATIENT_PASSWORD'),
   rescheduleDate: process.env.RESCHEDULE_DATE ?? '2026-12-01',
   rescheduleSlot: process.env.RESCHEDULE_SLOT ?? '09:00',
-  bookDoctorName: process.env.BOOK_DOCTOR_NAME ?? 'Ana García',
-  bookDate: process.env.BOOK_DATE ?? '2027-01-01',
-  bookSlot: process.env.BOOK_SLOT ?? '09:00',
+  doctorName: process.env.DOCTOR_NAME ?? 'Ana García',
 };

@@ -10,13 +10,4 @@ export class DashboardPage {
       state: 'visible',
     });
   }
-
-  newAppointmentLink() {
-    return this.page.locator('main').getByRole('link', { name: /New Appointment/i });
-  }
-
-  async openNewAppointment() {
-    await this.newAppointmentLink().click();
-    await this.page.waitForURL(/\/appointments\/new/);
-  }
 }

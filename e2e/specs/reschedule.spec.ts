@@ -12,7 +12,7 @@ test.describe('Reschedule appointment', () => {
     const originalSlot = '15:30';
     const appointmentNotes = `Cardiology follow-up - ${Date.now()}`;
 
-    const doctor = await api.findDoctorByName(env.bookDoctorName);
+    const doctor = await api.findDoctorByName(env.doctorName);
     let appointment: Appointment;
     let putResponseBody: { appointment?: Appointment } | undefined;
 

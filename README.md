@@ -4,9 +4,9 @@ Playwright + TypeScript tests for the [MedAppoint](https://light-it-qa-challenge
 
 **Author:** Florencia Polisceni
 
-The suite covers four flows: login/logout, booking from the dashboard, rescheduling an existing appointment, and updating the patient profile. Everything runs against the hosted app and API — no local frontend needed.
+The suite covers three flows: login/logout, rescheduling an existing appointment, and updating the patient profile. Everything runs against the hosted app and API — no local frontend needed.
 
-**NOTE** 3 tests WILL fail, as they represent **existing bugs**
+**Note:** Two tests fail on purpose — they catch known bugs in the hosted app (reschedule PUT and profile PUT).
 
 ## Setup
 
@@ -26,7 +26,7 @@ Edit `.env` with your email and password. If the password contains `#`, wrap it 
 npm test
 ```
 
-Run the full suite with a visible browser (setup + auth + all three flows):
+Run the full suite with a visible browser:
 
 ```bash
 npm run test:headed
@@ -60,7 +60,7 @@ e2e/
 
 Tests use page objects for locators. Since we can't add `data-testid` to the app, selectors rely on roles, labels, and the few existing test ids.
 
-Runs are serial (`workers: 1`) because all tests share the same patient account. The browser timezone is fixed to `America/Argentina/Buenos_Aires` so date-display bugs reproduce the same way locally and in CI.
+Runs are serial (`workers: 1`) because all tests share the same patient account.
 
 ## Environment
 
@@ -70,8 +70,7 @@ Runs are serial (`workers: 1`) because all tests share the same patient account.
 | `PATIENT_PASSWORD` | yes | — |
 | `BASE_URL` | no | `https://light-it-qa-challenge.vercel.app` |
 | `API_URL` | no | `https://qa-challenge-backend.vercel.app/api` |
-| `BOOK_DOCTOR_NAME` | no | `Ana García` |
-| `BOOK_DATE` / `BOOK_SLOT` | no | `2027-01-01` / `09:00` |
+| `DOCTOR_NAME` | no | `Ana García` |
 | `RESCHEDULE_DATE` / `RESCHEDULE_SLOT` | no | `2026-12-01` / `09:00` |
 
 ## CI
@@ -87,4 +86,4 @@ Before the first run, add these repository secrets under **Settings → Secrets 
 
 The workflow installs Chromium, runs the full suite, and uploads the HTML report as an artifact on every run. Screenshots and videos are saved when tests fail.
 
-**Note:** Three tests currently fail due to known bugs in the hosted app (date display, reschedule PUT, profile PUT). Auth tests pass. The pipeline will report those failures until the app is fixed.
+**Note:** Reschedule and profile tests fail due to known bugs in the hosted app. Auth tests pass.
