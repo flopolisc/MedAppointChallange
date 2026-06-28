@@ -6,6 +6,8 @@ Playwright + TypeScript tests for the [MedAppoint](https://light-it-qa-challenge
 
 The suite covers four flows: login/logout, booking from the dashboard, rescheduling an existing appointment, and updating the patient profile. Everything runs against the hosted app and API — no local frontend needed.
 
+**NOTE** 3 tests WILL fail, as they represent **existing bugs**
+
 ## Setup
 
 Node 18+ and the challenge patient credentials.
