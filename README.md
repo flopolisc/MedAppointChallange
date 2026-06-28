@@ -4,9 +4,18 @@ Playwright + TypeScript tests for the [MedAppoint](https://light-it-qa-challenge
 
 **Author:** Florencia Polisceni
 
-The suite covers three flows: login/logout, rescheduling an existing appointment, and updating the patient profile. Everything runs against the hosted app and API — no local frontend needed.
+End-to-end coverage for login, rescheduling an appointment, and updating the patient profile. Tests run against the hosted app and API — no local frontend required.
 
-**Note:** Two tests fail on purpose — they catch known bugs in the hosted app (reschedule PUT and profile PUT).
+## Tests
+
+| Spec | Flow | Expected |
+|------|------|----------|
+| `auth.setup.ts` | UI login, save session | pass |
+| `auth-and-navigation.spec.ts` | Login, dashboard, logout redirect | pass |
+| `reschedule.spec.ts` | API seed → UI reschedule → verify PUT + list | **fail** (known app bugs) |
+| `profile-settings.spec.ts` | Update name/notes → verify PUT + reload | **fail** (known app bugs) |
+
+Reschedule and profile tests intentionally assert correct behaviour. They fail because the hosted app returns wrong data on PUT (stale reschedule values; profile fields merged into `first_name`).
 
 ## Setup
 
@@ -26,7 +35,7 @@ Edit `.env` with your email and password. If the password contains `#`, wrap it 
 npm test
 ```
 
-Run the full suite with a visible browser:
+Visible browser:
 
 ```bash
 npm run test:headed
@@ -35,32 +44,40 @@ npm run test:headed
 Other commands:
 
 ```bash
-npm run test:ui       # Playwright UI mode (not the same as headed)
+npm run test:ui       # Playwright UI mode
 npm run report        # open the HTML report after a run
 ```
 
-If Chrome does not appear, run `npx playwright install chromium` first. On macOS the window may open behind Cursor — look for "Google Chrome for Testing" in the Dock.
-
 ## How auth works
 
-Login happens once in `e2e/auth.setup.ts` (real UI login). Playwright saves the session to `e2e/.auth/session.json` and reuses it for the rest of the suite via `storageState`. The auth spec runs in a separate project without that session, so it still tests the login page from scratch.
+Login runs once in `e2e/auth.setup.ts`. Playwright saves the session to `e2e/.auth/session.json` and reuses it via `storageState`. The auth spec runs in a separate project without that session, so it still exercises the login page from scratch.
 
-For reschedule tests, the appointment is created through the API first; the test only covers the UI part of rescheduling.
+Reschedule tests create the appointment via `POST /appointments` first; the spec covers only the UI reschedule flow.
 
-## Layout
+## Project layout
 
 ```
 e2e/
 ├── auth.setup.ts
-├── fixtures/       # shared test fixture + API helper
-├── helpers/        # env, API client, session token
-├── pages/          # page objects
-└── specs/          # test files
+├── fixtures/auth.fixture.ts
+├── helpers/
+│   ├── api.ts
+│   ├── auth-session.ts
+│   └── env.ts
+├── pages/
+│   ├── appointments.page.ts
+│   ├── dashboard.page.ts
+│   ├── login.page.ts
+│   └── profile.page.ts
+└── specs/
+    ├── auth-and-navigation.spec.ts
+    ├── profile-settings.spec.ts
+    └── reschedule.spec.ts
 ```
 
-Tests use page objects for locators. Since we can't add `data-testid` to the app, selectors rely on roles, labels, and the few existing test ids.
+Locators live in page objects. Selectors use roles, labels, and existing test ids — the app cannot be modified to add new ones.
 
-Runs are serial (`workers: 1`) because all tests share the same patient account.
+Tests run serially (`workers: 1`) because they share one patient account.
 
 ## Environment
 
@@ -75,15 +92,15 @@ Runs are serial (`workers: 1`) because all tests share the same patient account.
 
 ## CI
 
-Tests run automatically on every push and pull request to `main` via [GitHub Actions](.github/workflows/e2e.yml).
+Tests run on every push and pull request to `main` via [GitHub Actions](.github/workflows/e2e.yml).
 
-Before the first run, add these repository secrets under **Settings → Secrets and variables → Actions**:
+Add these repository secrets under **Settings → Secrets and variables → Actions**:
 
 | Secret | Value |
 |--------|-------|
 | `PATIENT_EMAIL` | Challenge patient email |
 | `PATIENT_PASSWORD` | Challenge patient password (paste as-is, no quotes) |
 
-The workflow installs Chromium, runs the full suite, and uploads the HTML report as an artifact on every run. Screenshots and videos are saved when tests fail.
+The workflow installs Chromium, runs the suite, and uploads the HTML report as an artifact. Screenshots and videos are attached when tests fail.
 
-**Note:** Reschedule and profile tests fail due to known bugs in the hosted app. Auth tests pass.
+Auth tests pass. Reschedule and profile tests fail until the app bugs are fixed.
