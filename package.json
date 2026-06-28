@@ -1,0 +1,18 @@
+{
+  "name": "medappoint-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MedAppoint E2E tests (Playwright + TypeScript)",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed --workers=1 --project=setup --project=auth --project=chromium",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.0",
+    "dotenv": "^16.5.0",
+    "typescript": "^5.8.0"
+  }
+}
